@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\LoginController;
+use PHPUnit\TextUI\XmlConfiguration\Group;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,20 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login', function(Request $request){
-
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
-
-    if (Auth::attempt($credentials)) {
-        $user = Auth::user();
-
-        $token = $user->createToken('JWT');
-        
-        return response()->json($token, 200);
-    }
-
-    return response()->json('Uauario invalido', 401);
+Route::prefix('login')->group(function (){
+    Route::post('/logar', [LoginController::class, 'logar']);
+    Route::post('/register', [LoginController::class, 'register']);
+    Route::post('/{id}/edit', [LoginController::class, 'edit']);
 });
