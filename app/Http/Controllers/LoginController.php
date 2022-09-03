@@ -17,15 +17,22 @@ class LoginController extends Controller
             'email'    => ['required', 'email'],
             'password' => ['required'],
         ]);
-    
+
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('JWT');
-            
-            return response()->json($token->plainTextToken, 200);
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Dados gravados com sucesso',
+                'token'   => $token->plainTextToken
+            ], 200);
         }
 
-        return response()->json('Uauario invalido', 401);
+        return response()->json([
+            'status'    => 'error',
+            'message'   => 'Usuário invalido',
+        ], 401);
     }
 
     /*
@@ -51,13 +58,13 @@ class LoginController extends Controller
                 'status'  => 'success',
                 'message' => 'Dados gravados com sucesso',
                 'token'   => $token->plainTextToken
-            ]);
+            ], 201);
         } catch (\Throwable $th) {
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Erro ao gravar os dados',
                 'descricao' => 'error'.$th,
-            ]);
+            ], 400);
         }
     }
 
@@ -84,13 +91,13 @@ class LoginController extends Controller
                 'status'  => 'success',
                 'message' => 'Dados gravados com sucesso',
                 'token'   => $token->plainTextToken
-            ]);
+            ], 201);
         } catch (\Throwable $th) {
             return response()->json([
                 'status'    => 'error',
                 'message'   => 'Erro ao gravar os dados',
                 'descricao' => 'error'.$th,
-            ]);
+            ], 400);
         }
     }
 }

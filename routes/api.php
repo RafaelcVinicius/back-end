@@ -17,12 +17,12 @@ use PHPUnit\TextUI\XmlConfiguration\Group;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-Route::prefix('login')->group(function (){
-    Route::post('/logar', [LoginController::class, 'logar']);
+Route::prefix('/')->group(function (){
+    Route::post('/login', [LoginController::class, 'login']);
     Route::post('/register', [LoginController::class, 'register']);
     Route::post('/{id}/edit', [LoginController::class, 'edit']);
+    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
