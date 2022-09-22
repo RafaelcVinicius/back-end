@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConsultaDadosController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +20,17 @@ use PHPUnit\TextUI\XmlConfiguration\Group;
 
 
 Route::prefix('/')->group(function (){
-    Route::post('/login', [LoginController::class, 'login']);
-    Route::post('/register', [LoginController::class, 'register']);
-    Route::post('/{id}/edit', [LoginController::class, 'edit']);
+    Route::post('/login',               [LoginController::class,         'login'        ]);
+    Route::post('/register',            [LoginController::class,         'register'     ]);
+    Route::post('/{id}/edit',           [LoginController::class,         'edit'         ]);
+
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::prefix('/consulta')->group(function (){
+        Route::get('/',        function(){ return json_encode('ola');});
+        Route::get('/dados',            [ConsultaDadosController::class, 'consultaDados']);
+    });
+    
 });

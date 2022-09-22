@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditPostRequest;
+use App\Http\Requests\LoginPostRequest;
+use App\Http\Requests\RegisterPostRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +14,7 @@ class LoginController extends Controller
     /*
     **    logar e retornar um token
     */
-    public function login(Request $request)
+    public function login(LoginPostRequest $request)
     {
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
@@ -38,7 +41,7 @@ class LoginController extends Controller
     /*
     **     registrar e chamar a função logar
     */
-    public function register(Request $request)
+    public function register(RegisterPostRequest $request)
     {
         $credentials = $request->validate([
             'name'     => ['required'],
@@ -71,18 +74,12 @@ class LoginController extends Controller
     /*
     **  atualizar os registros
     */
-    public function edit(Request $request, $id)
+    public function edit(EditPostRequest $request, $id)
     {
-        $credentials = $request->validate([
-            'name'     => ['required'],
-            'email'    => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
         $user = User::find($id);
-        $user->name     = $credentials['name'];
-        $user->email    = $credentials['email'];
-        $user->password = bcrypt($credentials['password']);
+        $user->name     = $request->get('name');
+        $user->email    = $request->get('email');
+        $user->password = bcrypt($request->get('password'));
         try {
             $user->save();
             $token = $user->createToken('JWT');
