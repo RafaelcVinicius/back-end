@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use Illuminate\Support\Facades\Log;
 use stdClass;
 
 class CustomRequest {
@@ -65,6 +66,7 @@ class CustomRequest {
     }
 
     private function handleResponse($response) {
+        Log::info(json_encode($response));
         $this->response = new CustomRequestResponse($response, curl_getinfo($this->curl));
         return $response !== false;
     }

@@ -27,7 +27,7 @@ class LoginController extends Controller
 
             return response()->json([
                 'status'  => 'success',
-                'message' => 'Dados gravados com sucesso',
+                'message' => 'Usuário autorizado',
                 'token'   => $token->plainTextToken
             ], 200);
         }
