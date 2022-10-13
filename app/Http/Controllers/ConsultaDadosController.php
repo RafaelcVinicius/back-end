@@ -13,10 +13,12 @@ class ConsultaDadosController extends Controller
     {
         $obj = new stdClass;
         $obj = json_decode($request->obj);
+        // $dias = floor((strtotime( $obj->dataFinal) - strtotime($obj->dataInicial)) / (60 * 60 * 24));
+        $valor = [];
 
-        $formato = 'dados?formato=json&dataInicial={'. $obj->dataInicial .'}&'.'dataFinal={'. $obj->dataFinal .'}';
-        $codConsulta =  433;
-Log::info(  $formato);
+        $formato = 'dados?formato=json&dataInicial={'. date('d/m/Y', strtotime($obj->dataInicial)) .'}&'.'dataFinal={'. date('d/m/Y', strtotime($obj->dataFinal)) .'}';
+        $codConsulta =  12;
+
         $req = new CustomRequest;
         $req->setRoute(config('routes-api.bcb.sgs').$codConsulta.'/'.$formato);
         $req->setHeaders([
@@ -25,7 +27,17 @@ Log::info(  $formato);
             'Accept'        =>  '*/*',
         ]);
         $req->get();
+        
+        $dadosBcb = $req->response->asJson;
+        $valorInicial = $obj->valorInicial;
+        foreach ($dadosBcb as $key => $value) {
+            Log::info(round(($valorInicial*($value->valor/100)), 2, PHP_ROUND_HALF_EVEN));
+            $valorInicial += round(($valorInicial*($value->valor/100)), 2, PHP_ROUND_HALF_EVEN);
+            Log::info($valorInicial);
+            array_push($valor,  ['valor' => round($valorInicial, 2, PHP_ROUND_HALF_EVEN), 'data' => $value->data]);
+            Log::info(json_encode($valor));
+        }
 
-        return $req->response->asJson;
+        return $valor;
     }
 }
