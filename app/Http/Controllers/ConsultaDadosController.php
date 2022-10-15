@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use App\Classes\CustomRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Services\BcbSgsService;
+use App\Repositories\Contracts\BcbSgsInterface;
 use stdClass;
 
 class ConsultaDadosController extends Controller
 {
+    public function __construct(BcbSgsService $BcbSgsService)
+    {
+        $this->BcbSgsService = $BcbSgsService;
+    }
+
     public function consultaDados(Request $request)
     {
         $obj = new stdClass;
@@ -17,7 +24,7 @@ class ConsultaDadosController extends Controller
         $valor = [];
 
         $formato = 'dados?formato=json&dataInicial={'. date('d/m/Y', strtotime($obj->dataInicial)) .'}&'.'dataFinal={'. date('d/m/Y', strtotime($obj->dataFinal)) .'}';
-        $codConsulta =  12;
+        $codConsulta =  433;
 
         $req = new CustomRequest;
         $req->setRoute(config('routes-api.bcb.sgs').$codConsulta.'/'.$formato);
@@ -31,13 +38,10 @@ class ConsultaDadosController extends Controller
         $dadosBcb = $req->response->asJson;
         $valorInicial = $obj->valorInicial;
         foreach ($dadosBcb as $key => $value) {
-            Log::info(round(($valorInicial*($value->valor/100)), 2, PHP_ROUND_HALF_EVEN));
             $valorInicial += round(($valorInicial*($value->valor/100)), 2, PHP_ROUND_HALF_EVEN);
-            Log::info($valorInicial);
             array_push($valor,  ['valor' => round($valorInicial, 2, PHP_ROUND_HALF_EVEN), 'data' => $value->data]);
-            Log::info(json_encode($valor));
         }
 
-        return $valor;
+        return $this->BcbSgsService->teste();
     }
 }
