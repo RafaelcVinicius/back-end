@@ -32,5 +32,9 @@ Route::prefix('/')->group(function (){
         Route::get('/',        function(){ return json_encode('ola');});
         Route::get('/dados',            [ConsultaDadosController::class, 'consultaDados']);
     });
-    
+
+    Route::prefix('/bcb')->group(function (){
+        Route::get('/',            [ConsultaDadosController::class, 'showApiBcbSgs']);
+    });
+
 });

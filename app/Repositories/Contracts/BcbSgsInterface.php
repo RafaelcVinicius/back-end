@@ -4,6 +4,6 @@ namespace App\Repositories\Contracts;
 
 interface BcbSgsInterface 
 {
-    public function teste();
+    public function showApiBcbSgs($code, $format = null);
 
 }

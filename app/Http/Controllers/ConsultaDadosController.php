@@ -44,4 +44,8 @@ class ConsultaDadosController extends Controller
 
         return $this->BcbSgsService->teste();
     }
+
+    public function showApiBcbSgs(Request $request){
+        return $this->BcbSgsService->showApiBcbSgs($request->all());
+    }
 }
